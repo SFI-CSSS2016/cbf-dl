@@ -1,4 +1,4 @@
-package net.seninp.dl;
+package net.seninp.dl4j;
 
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
@@ -54,7 +54,7 @@ public class LenetMnistExample {
         /*
          * Uncomment the following for learning decay and bias
          */
-        .learningRate(.01)// .biasLearningRate(0.02)
+        .learningRate(.01).biasLearningRate(0.02)
         // .learningRateDecayPolicy(LearningRatePolicy.Inverse).lrPolicyDecayRate(0.001).lrPolicyPower(0.75)
         .weightInit(WeightInit.XAVIER)
         .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)

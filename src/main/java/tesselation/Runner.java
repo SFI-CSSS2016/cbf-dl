@@ -15,7 +15,7 @@ public class Runner {
 
   public static void main(String[] args) throws NumberFormatException, IOException {
 
-    ArrayList<double[]> dat = readData("../attractors/rossler_results_00.txt");
+    ArrayList<double[]> dat = readData("rossler_results_01.txt");
 
     GraphFactory alg = new GraphFactory(0.001);
 

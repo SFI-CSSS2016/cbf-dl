@@ -37,9 +37,9 @@ public class AttachTheDiscretization {
 
   public static void main(String[] args) throws NumberFormatException, IOException, SAXException {
 
-    ArrayList<double[]> dat = readData("../attractors/rossler_results_00.txt");
+    ArrayList<double[]> dat = readData("rossler_results_01.txt");
 
-    Map<String, List<double[]>> data = UCRUtils.readUCRData("src/resources/site/CBF_TRAIN");
+    Map<String, List<double[]>> data = UCRUtils.readUCRData("src/resources/data/CBF/CBF_TRAIN");
 
     double[] series = data.get("1").get(0);
     // System.out.print(Arrays.toString(series));
@@ -51,7 +51,7 @@ public class AttachTheDiscretization {
     indexes.addAll(sax.getIndexes());
     Collections.sort(indexes);
 
-    PrintWriter writer = new PrintWriter(new File("rossler_results_named.txt"), "UTF-8");
+    PrintWriter writer = new PrintWriter(new File("rossler_results_01_named.txt"), "UTF-8");
 
     int gCounter = 0;
     for (Integer idx : indexes) {

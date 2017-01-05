@@ -1,4 +1,4 @@
-package net.seninp.cbfdl;
+package net.seninp.attractor.experiment;
 
 import java.io.File;
 import java.io.IOException;

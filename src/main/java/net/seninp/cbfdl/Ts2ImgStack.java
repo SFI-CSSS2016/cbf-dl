@@ -1,4 +1,4 @@
-package net.seninp.cbf_dl;
+package net.seninp.cbfdl;
 
 import java.io.IOException;
 import java.util.List;

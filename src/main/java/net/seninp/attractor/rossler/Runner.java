@@ -1,5 +1,6 @@
 package net.seninp.attractor.rossler;
 
+import java.util.ArrayList;
 import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
 import org.apache.commons.math3.ode.sampling.StepNormalizer;
 
@@ -13,7 +14,9 @@ public class Runner {
 
     RosslerEquations equations = new RosslerEquations(0.432, 2., 4);
 
-    RosslerStepHandler lz = new RosslerStepHandler();
+    ArrayList<double[]> theCurve = new ArrayList<double[]>();
+
+    RosslerStepHandler lz = new RosslerStepHandler("test02.txt", theCurve);
 
     integrator.addStepHandler(new StepNormalizer(0.01, lz));
 

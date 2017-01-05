@@ -1,13 +1,10 @@
 package net.seninp.rtree;
 
-import static com.github.davidmoten.rtree.geometry.Geometries.point;
-import static org.junit.Assert.assertEquals;
 import java.util.List;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
-import rx.Observable;
 
 public class PointTest {
 
@@ -25,7 +22,7 @@ public class PointTest {
 
    List<Entry<String, Geometry>> res1 = tree.search(Geometries.point(0.45, 0.45), 10).toList().toBlocking().single();
 
-    System.out.println(res1);
+    System.out.println(res1.get(0));
   }
 
 }

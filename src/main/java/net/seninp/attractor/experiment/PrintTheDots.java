@@ -1,5 +1,6 @@
 package net.seninp.attractor.experiment;
 
+import java.util.ArrayList;
 import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
 import org.apache.commons.math3.ode.sampling.StepNormalizer;
 import net.seninp.attractor.rossler.RosslerEquations;
@@ -13,7 +14,9 @@ public class PrintTheDots {
 
     RosslerEquations equations = new RosslerEquations(0.441, 1.99, 3.75);
 
-    RosslerStepHandler lz = new RosslerStepHandler();
+    ArrayList<double[]> theCurve = new ArrayList<double[]>();
+    
+    RosslerStepHandler lz = new RosslerStepHandler("test01.txt", theCurve);
 
     integrator.addStepHandler(new StepNormalizer(0.1, lz));
 

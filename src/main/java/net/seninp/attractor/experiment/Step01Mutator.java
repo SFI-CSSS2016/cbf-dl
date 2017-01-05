@@ -53,8 +53,6 @@ public class Step01Mutator {
   // the logger
   private static final Logger LOGGER = LoggerFactory.getLogger(TSProcessor.class);
 
-  private static final double MAX_DIST = 0.2;
-
   public static void main(String[] args) throws NumberFormatException, IOException, SAXException {
 
     // 0.0 -- read the data
@@ -85,12 +83,17 @@ public class Step01Mutator {
         theString.append(s);
       }
     }
+    PrintWriter writer = new PrintWriter(new File("e01_string.txt"), "UTF-8");
+    for (int i = 0; i < theString.length(); i++) {
+      writer.println(theString.charAt(i));
+    }
+    writer.close();
 
     // 0.3 generate the curve
     //
     ArrayList<double[]> theCurve = new ArrayList<double[]>();
-    RosslerEquations equations = new RosslerEquations(0.441, 1.99, 3.75);
-    RosslerStepHandler stepHandler = new RosslerStepHandler("test01.txt", theCurve);
+    RosslerEquations equations = new RosslerEquations(0.439, 1.99, 3.75);
+    RosslerStepHandler stepHandler = new RosslerStepHandler("e01_original_curve.txt", theCurve);
     INTEGRATOR.addStepHandler(new StepNormalizer(0.1, stepHandler));
     INTEGRATOR.integrate(equations, 0, new double[] { 1., 1., 1. }, theString.length() * 0.1,
         new double[3]);
@@ -103,8 +106,8 @@ public class Step01Mutator {
       double[] pp = theCurve.get(i);
       p[i] = new Point(pp[1], pp[2]);
     }
-    List<GraphEdge> result = alg.generateVoronoi(p, -5, 7, -8, 4);
-    PrintWriter writer = new PrintWriter(new File("voronoi_edges.txt"), "UTF-8");
+    List<GraphEdge> result = alg.generateVoronoi(p, -3, 5, -5.5, 2.5);
+    writer = new PrintWriter(new File("e01_tesselation.txt"), "UTF-8");
     for (GraphEdge e : result) {
       writer.println(
           "  " + e.x1 + ", " + e.y1 + ", " + e.x2 + ", " + e.y2 + ", " + e.site1 + ", " + e.site2);
@@ -123,10 +126,10 @@ public class Step01Mutator {
     // 0.6 mutate the curve a bit
     //
     ArrayList<double[]> theMutatedCurve = new ArrayList<double[]>();
-    equations = new RosslerEquations(0.437, 1.99, 3.75);
-    stepHandler = new RosslerStepHandler("test02.txt", theMutatedCurve);
+    equations = new RosslerEquations(0.440, 2.01, 3.74);
+    stepHandler = new RosslerStepHandler("e01_mutated_curve.txt", theMutatedCurve);
     INTEGRATOR.addStepHandler(new StepNormalizer(0.1, stepHandler));
-    INTEGRATOR.integrate(equations, 0, new double[] { 1., 1., 1. }, theString.length(),
+    INTEGRATOR.integrate(equations, 0, new double[] { 0.99, 1., 1. }, theString.length(),
         new double[3]);
 
     // 0.6 extract the new string
@@ -143,8 +146,11 @@ public class Step01Mutator {
 
     }
 
-    System.out.println(theString + CR + CR);
-    System.out.println(theNewString);
+    writer = new PrintWriter(new File("e01_mutated_string.txt"), "UTF-8");
+    for (int i = 0; i < theNewString.length(); i++) {
+      writer.println(theNewString.charAt(i));
+    }
+    writer.close();
 
   }
 

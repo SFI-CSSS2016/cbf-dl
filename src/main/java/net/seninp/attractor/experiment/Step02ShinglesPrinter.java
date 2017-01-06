@@ -62,7 +62,7 @@ public class Step02ShinglesPrinter {
       0.01);
 
   // other constants
-  private static final int MUTANTS_NUMBER = 10;
+  private static final int MUTANTS_NUMBER = 100;
 
   private static final String TAB = "\t";
   private static final String CR = "\n";

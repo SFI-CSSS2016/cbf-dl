@@ -1,6 +1,8 @@
 package net.seninp.attractor.experiment;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,27 +25,30 @@ import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.text.Params;
 import net.seninp.jmotif.text.TextProcessor;
 import net.seninp.jmotif.text.WordBag;
 import net.seninp.util.UCRUtils;
 
-public class Step01MutatorRefactory {
+public class Step02ShinglesPrinter {
 
   // private static final String CR = "\n";
   // private static final String COMMA = ", ";
   // private static final String TAB = "\t";
 
   // discretization parameters
-  private final static int WINDOW_SIZE = 70;
+  private final static int WINDOW_SIZE = 60;
   private final static int PAA_SIZE = 6;
-  private final static int ALPHABET_SIZE = 5;
+  private final static int ALPHABET_SIZE = 6;
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
   private final static Alphabet ALPHABET = new NormalAlphabet();
   private final static TextProcessor tp = new TextProcessor();
   private final static SAXProcessor sp = new SAXProcessor();
+
+  private final static String[] alphabet = { "a", "b", "c", "d", "e", "f" };
+  private final static int SHINGLE_SIZE = 3;
 
   // the data
   private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
@@ -58,6 +63,9 @@ public class Step01MutatorRefactory {
 
   // other constants
   private static final int MUTANTS_NUMBER = 10;
+
+  private static final String TAB = "\t";
+  private static final String CR = "\n";
 
   // the logger
   private static final Logger LOGGER = LoggerFactory.getLogger(TSProcessor.class);
@@ -113,46 +121,67 @@ public class Step01MutatorRefactory {
 
     }
 
-    LOGGER.info("training the classifier");
+    LOGGER.info("done mutations");
 
-    Map<String, List<double[]>> trainData = UCRUtils.readUCRData(TRAIN_DATA);
-    Map<String, List<double[]>> testData = UCRUtils.readUCRData(TEST_DATA);
-    Params params = new Params(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE, NORM_THRESHOLD, NR_STRATEGY);
-    List<WordBag> bags = tp.labeledSeries2WordBags(trainData, params);
-    HashMap<String, HashMap<String, Double>> tfidf = tp.computeTFIDF(bags);
-    int testSampleSize = 0;
-    int positiveTestCounter = 0;
-    for (String label : tfidf.keySet()) {
-      List<double[]> testD = testData.get(label);
-      for (double[] ts : testD) {
-        positiveTestCounter = positiveTestCounter + tp.classify(label, ts, tfidf, params);
-        testSampleSize++;
-      }
-    }
-    double accuracy = (double) positiveTestCounter / (double) testSampleSize;
-    double error = 1.0d - accuracy;
-    System.out
-        .println("STANADARD CBF classification results: accuracy " + accuracy + ", error " + error);
-
-    // classifying
-    //
-    testSampleSize = 0;
-    positiveTestCounter = 0;
+    Shingles allShingles = new Shingles(ALPHABET_SIZE, SHINGLE_SIZE);
 
     for (java.util.Map.Entry<String, String> e : CBFMutants.entrySet()) {
-      String trueLabel = e.getKey().substring(0, e.getKey().indexOf("_"));
-      String predictedLabel = tp.classify(toWordBag(e.getKey(), e.getValue(), PAA_SIZE), tfidf);
-      if (predictedLabel.equalsIgnoreCase(trueLabel)) {
-        positiveTestCounter++;
-      }
-      testSampleSize++;
-    }
-    // accuracy and error
-    accuracy = (double) positiveTestCounter / (double) testSampleSize;
-    error = 1.0d - accuracy;
-    // report results
-    System.out.println("mutants classification results: accuracy " + accuracy + "; error " + error);
 
+      Map<String, Integer> shingles = stringToShingles(e.getValue(), PAA_SIZE);
+      allShingles.addShingledSeries(e.getKey(), shingles);
+    }
+
+    ArrayList<String> keys = new ArrayList<String>();
+    keys.addAll(allShingles.getShingles().keySet());
+    Collections.sort(keys);
+
+    PrintWriter writer = new PrintWriter(new File("shingled_mutant_CBF.txt"), "UTF-8");
+
+    ArrayList<String> shingles = new ArrayList<String>();
+    shingles.addAll(allShingles.getShinglesIndex().keySet());
+    Collections.sort(shingles);
+
+    StringBuffer header = new StringBuffer();
+    for (String s : shingles) {
+      header.append(s).append(TAB);
+    }
+    writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
+
+    for (String k : keys) {
+      int[] freqArray = allShingles.get(k);
+      StringBuffer line = new StringBuffer();
+      for (String s : shingles) {
+        line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(TAB);
+      }
+      writer.print(k + TAB + line.deleteCharAt(line.length() - 1) + CR);
+    }
+    // for (double[] step : steps) {
+    // writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);
+    // }
+    writer.close();
+
+  }
+
+  private static Map<String, Integer> stringToShingles(String str, int paaSize) {
+
+    String[] allShingles = SAXProcessor.getAllPermutations(alphabet, SHINGLE_SIZE);
+    // result
+    HashMap<String, Integer> res = new HashMap<String, Integer>(allShingles.length);
+    for (String s : allShingles) {
+      res.put(s, 0);
+    }
+
+    int ctr = 0;
+    while (ctr < str.length()) {
+      String word = str.subSequence(ctr, ctr + PAA_SIZE).toString();
+      for (int i = 0; i <= word.length() - SHINGLE_SIZE; i++) {
+        String shingle = word.substring(i, i + SHINGLE_SIZE);
+        res.put(shingle, res.get(shingle) + 1);
+      }
+      ctr = ctr + PAA_SIZE;
+    }
+
+    return res;
   }
 
   private static WordBag toWordBag(String bagLabel, String str, int paaSize) {
@@ -217,6 +246,10 @@ public class Step01MutatorRefactory {
       res.put(keyPrefix + "_" + String.valueOf(j), theNewString.toString());
 
     }
+
+    tree = null;
+    theCurve = null;
+    System.gc();
 
     return res;
   }

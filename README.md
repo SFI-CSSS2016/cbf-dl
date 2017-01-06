@@ -16,7 +16,7 @@ Next,
 ###2.0 First sanity check before diving to DL
 For the sanity check we use [SAX-VSM classifier](https://github.com/jMotif/sax-vsm_classic) built for CBF dataset. Once built, the classifier will be used for all the new data points generated with the above procedure based on Rössler attractor. Expected is the high accuracy... but might be not... Let's see... "_The data point_" here is the character sequence converted into a word bag.
 
-Apparently the accuracy is 100% for classifying the mutated series
+Apparently the accuracy is 100% for classifying the mutated series set
 
     $ java -Xmx14G -cp "target/cbf-dl-0.0.1-SNAPSHOT-jar-with-dependencies.jar" net.seninp.attractor.experiment.Step01MutatorRefactory
     11:34:14.388 [main] INFO  net.seninp.jmotif.sax.TSProcessor - read "src/resources/data/CBF/CBF_TRAIN" classes: 3, series length min: 128, max: 128, min value: -2.3168621, max value: 3.2445649;"src/resources/data/CBF/CBF_TRAIN"  class: 1 series: 10;"src/resources/data/CBF/CBF_TRAIN"  class: 2 series: 12;"src/resources/data/CBF/CBF_TRAIN"  class: 3 series: 8

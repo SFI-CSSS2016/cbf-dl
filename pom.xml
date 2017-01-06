@@ -93,7 +93,7 @@
 			<artifactId>commons-math3</artifactId>
 			<version>3.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -110,6 +110,12 @@
 			<groupId>net.seninp</groupId>
 			<artifactId>jmotif-sax</artifactId>
 			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.seninp</groupId>
+			<artifactId>sax-vsm</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

@@ -25,18 +25,18 @@ public class RosslerStepHandler implements FixedStepHandler {
     double[] arr = { t, y[0], y[1], y[2] };
     steps.add(arr);
 
-    if (isLast) {
-      try {
-        PrintWriter writer = new PrintWriter(new File(fname), "UTF-8");
-        for (double[] step : steps) {
-          writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);
-        }
-        writer.close();
-      }
-      catch (Exception e) {
-      }
-
-    }
+//    if (isLast) {
+//      try {
+//        PrintWriter writer = new PrintWriter(new File(fname), "UTF-8");
+//        for (double[] step : steps) {
+//          writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);
+//        }
+//        writer.close();
+//      }
+//      catch (Exception e) {
+//      }
+//
+//    }
 
   }
 

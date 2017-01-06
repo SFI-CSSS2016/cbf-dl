@@ -1,8 +1,6 @@
 package net.seninp.attractor.experiment;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,8 +15,6 @@ import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
-import be.humphreys.simplevoronoi.GraphEdge;
-import be.humphreys.simplevoronoi.Point;
 import net.seninp.attractor.rossler.RosslerEquations;
 import net.seninp.attractor.rossler.RosslerStepHandler;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
@@ -32,7 +28,6 @@ import net.seninp.jmotif.text.Params;
 import net.seninp.jmotif.text.TextProcessor;
 import net.seninp.jmotif.text.WordBag;
 import net.seninp.util.UCRUtils;
-import us.molini.graph.GraphFactory;
 
 public class Step01MutatorRefactory {
 
@@ -41,9 +36,9 @@ public class Step01MutatorRefactory {
   private static final String TAB = "\t";
 
   // discretization parameters
-  private final static int WINDOW_SIZE = 60;
+  private final static int WINDOW_SIZE = 70;
   private final static int PAA_SIZE = 6;
-  private final static int ALPHABET_SIZE = 6;
+  private final static int ALPHABET_SIZE = 5;
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
   private final static Alphabet ALPHABET = new NormalAlphabet();
@@ -74,7 +69,7 @@ public class Step01MutatorRefactory {
     // 0.1 -- take the only class #1 and series #0 and mutate it ... later
     //
     // TODO: wrap into the loop
-    String key = "3";
+    String key = "1";
     int index = 0;
     double[] series = CBFData.get(key).get(index);
     LOGGER.info(
@@ -95,7 +90,7 @@ public class Step01MutatorRefactory {
       }
     }
 
-    Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(), key, 10);
+    Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(), key, 100);
 
     LOGGER.info("training the classifier");
 
@@ -115,7 +110,8 @@ public class Step01MutatorRefactory {
     }
     double accuracy = (double) positiveTestCounter / (double) testSampleSize;
     double error = 1.0d - accuracy;
-    System.out.println("STANADARD CBF classification results: " + accuracy + ", " + error);
+    System.out
+        .println("STANADARD CBF classification results: accuracy " + accuracy + ", error " + error);
 
     // classifying
     //
@@ -123,7 +119,7 @@ public class Step01MutatorRefactory {
     positiveTestCounter = 0;
 
     for (java.util.Map.Entry<String, String> e : mutatedStrings.entrySet()) {
-      String predictedLabel = tp.classify(toWordBag(e.getValue(), PAA_SIZE), tfidf);
+      String predictedLabel = tp.classify(toWordBag(e.getKey(), e.getValue(), PAA_SIZE), tfidf);
       if (predictedLabel.equalsIgnoreCase(key)) {
         positiveTestCounter++;
       }
@@ -133,13 +129,19 @@ public class Step01MutatorRefactory {
     accuracy = (double) positiveTestCounter / (double) testSampleSize;
     error = 1.0d - accuracy;
     // report results
-    System.out.println("classification results: " + accuracy + "; " + error);
+    System.out.println("mutants classification results: accuracy " + accuracy + "; error " + error);
 
   }
 
-  private static WordBag toWordBag(String value, int paaSize) {
-    // TODO Auto-generated method stub
-    return null;
+  private static WordBag toWordBag(String bagLabel, String str, int paaSize) {
+    WordBag wb = new WordBag(bagLabel);
+    int ctr = 0;
+    while (ctr < str.length()) {
+      CharSequence word = str.subSequence(ctr, ctr + PAA_SIZE);
+      wb.addWord(word.toString());
+      ctr = ctr + PAA_SIZE;
+    }
+    return wb;
   }
 
   private static Hashtable<String, String> mutateStringRossler(String theString, String keyPrefix,

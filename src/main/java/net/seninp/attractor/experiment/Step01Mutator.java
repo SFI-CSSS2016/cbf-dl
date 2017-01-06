@@ -74,7 +74,7 @@ public class Step01Mutator {
     // 0.1 -- take the only class #1 and series #0 and mutate it ... later
     //
     // TODO: wrap into the loop
-    String key = "1";
+    String key = "3";
     int index = 0;
     double[] series = CBFData.get(key).get(index);
     LOGGER.info(
@@ -138,7 +138,7 @@ public class Step01Mutator {
 
     LOGGER.info("producing mutants");
 
-    for (int j = 0; j < 100; j++) {
+    for (int j = 0; j < 30; j++) {
 
       // 0.6 mutate the curve a bit
       //

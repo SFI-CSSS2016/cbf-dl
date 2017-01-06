@@ -1,7 +1,5 @@
 package net.seninp.attractor.rossler;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import org.apache.commons.math3.ode.sampling.FixedStepHandler;
 

@@ -5,15 +5,35 @@
 	<groupId>net.seninp</groupId>
 	<artifactId>cbf-dl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<name>cbf-dl</name>
-	<url>http://maven.apache.org</url>
+	<description>SAX-DL tinkering</description>
+	<url>https://github.com/SFI-CSSS2016/cbf-dl</url>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License v2.0</name>
+			<url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Pavel Senin</name>
+			<email>seninp@gmail.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/SFI-CSSS2016/cbf-dl</url>
+		<connection>https://github.com/SFI-CSSS2016/cbf-dl.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/SFI-CSSS2016/cbf-dl.git</developerConnection>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<nd4j.backend>nd4j-native-platform</nd4j.backend>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<shadedClassifier>bin</shadedClassifier>
 		<java.version>1.7</java.version>
 		<nd4j.version>0.7.0</nd4j.version>
@@ -28,6 +48,67 @@
 		<exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
 		<maven.minimum.version>3.3.1</maven.minimum.version>
 	</properties>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<argLine>${argLine} -Xms512m -Xmx1024m</argLine>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>single</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.5.4</version>
+						<configuration>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<archive>
+								<manifest>
+									<mainClass>net.seninp.jmotif.direct.SAXVSMDirectSampler</mainClass>
+								</manifest>
+							</archive>
+							<!-- <filters> <filter>src/assembly/filter.properties</filter> </filters> 
+								<descriptors> <descriptor>src/assembly/distribution.xml</descriptor> </descriptors> -->
+						</configuration>
+						<executions>
+							<execution>
+								<id>make-assembly</id> <!-- this is used for inheritance merges -->
+								<phase>package</phase> <!-- bind to the packaging phase -->
+								<goals>
+									<goal>single</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencies>
 

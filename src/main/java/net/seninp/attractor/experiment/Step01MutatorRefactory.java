@@ -31,9 +31,9 @@ import net.seninp.util.UCRUtils;
 
 public class Step01MutatorRefactory {
 
-  private static final String CR = "\n";
-  private static final String COMMA = ", ";
-  private static final String TAB = "\t";
+  // private static final String CR = "\n";
+  // private static final String COMMA = ", ";
+  // private static final String TAB = "\t";
 
   // discretization parameters
   private final static int WINDOW_SIZE = 70;
@@ -56,6 +56,9 @@ public class Step01MutatorRefactory {
   private static final ClassicalRungeKuttaIntegrator INTEGRATOR = new ClassicalRungeKuttaIntegrator(
       0.01);
 
+  // other constants
+  private static final int MUTANTS_NUMBER = 10;
+
   // the logger
   private static final Logger LOGGER = LoggerFactory.getLogger(TSProcessor.class);
 
@@ -66,31 +69,49 @@ public class Step01MutatorRefactory {
     Map<String, List<double[]>> CBFData = UCRUtils.readUCRData(TRAIN_DATA);
     LOGGER.info("read " + UCRUtils.datasetStats(CBFData, "\"" + TRAIN_DATA + "\" "));
 
-    // 0.1 -- take the only class #1 and series #0 and mutate it ... later
+    // 0.1 -- iterate over the training classes and series
     //
-    // TODO: wrap into the loop
-    String key = "1";
-    int index = 0;
-    double[] series = CBFData.get(key).get(index);
-    LOGGER.info(
-        "fixed series of class " + key + ", index " + index + ", " + series.length + " points");
+    Hashtable<String, String> CBFMutants = new Hashtable<String, String>();
 
-    // 0.2 disretize the series to a string
-    //
-    SAXRecords sax = sp.ts2saxViaWindow(series, WINDOW_SIZE, PAA_SIZE,
-        ALPHABET.getCuts(ALPHABET_SIZE), NR_STRATEGY, NORM_THRESHOLD);
-    ArrayList<Integer> indexes = new ArrayList<Integer>();
-    indexes.addAll(sax.getIndexes());
-    Collections.sort(indexes);
-    StringBuffer theString = new StringBuffer(indexes.size() * PAA_SIZE);
-    for (Integer idx : indexes) {
-      char[] str = sax.getByIndex(idx).getPayload();
-      for (char s : str) {
-        theString.append(s);
+    for (java.util.Map.Entry<String, List<double[]>> trainEntry : CBFData.entrySet()) {
+
+      String seriesKey = trainEntry.getKey();
+
+      // iterate over the class' series
+      int seriesIdx = 0;
+      while (seriesIdx < trainEntry.getValue().size()) {
+
+        double[] series = CBFData.get(seriesKey).get(seriesIdx);
+
+        LOGGER.info("processing series of class " + seriesKey + ", index " + seriesIdx);
+
+        // 0.2 disretize the series to a string
+        //
+        SAXRecords sax = sp.ts2saxViaWindow(series, WINDOW_SIZE, PAA_SIZE,
+            ALPHABET.getCuts(ALPHABET_SIZE), NR_STRATEGY, NORM_THRESHOLD);
+        ArrayList<Integer> indexes = new ArrayList<Integer>();
+        indexes.addAll(sax.getIndexes());
+        Collections.sort(indexes);
+        StringBuffer theString = new StringBuffer(indexes.size() * PAA_SIZE);
+        for (Integer idx : indexes) {
+          char[] str = sax.getByIndex(idx).getPayload();
+          for (char s : str) {
+            theString.append(s);
+          }
+        }
+
+        // 0.3 obtain the list of mutants
+        //
+        Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(),
+            seriesKey, MUTANTS_NUMBER);
+
+        CBFMutants.putAll(mutatedStrings);
+
+        seriesIdx++;
+
       }
-    }
 
-    Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(), key, 100);
+    }
 
     LOGGER.info("training the classifier");
 
@@ -118,9 +139,10 @@ public class Step01MutatorRefactory {
     testSampleSize = 0;
     positiveTestCounter = 0;
 
-    for (java.util.Map.Entry<String, String> e : mutatedStrings.entrySet()) {
+    for (java.util.Map.Entry<String, String> e : CBFMutants.entrySet()) {
+      String trueLabel = e.getKey().substring(0, e.getKey().indexOf("_"));
       String predictedLabel = tp.classify(toWordBag(e.getKey(), e.getValue(), PAA_SIZE), tfidf);
-      if (predictedLabel.equalsIgnoreCase(key)) {
+      if (predictedLabel.equalsIgnoreCase(trueLabel)) {
         positiveTestCounter++;
       }
       testSampleSize++;

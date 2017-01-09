@@ -58,8 +58,6 @@ public class Step02ShinglesPrinter {
   private static final double BASE_A = 0.20;
   private static final double BASE_B = 0.20;
   private static final double BASE_C = 5.0;
-  private static final ClassicalRungeKuttaIntegrator INTEGRATOR = new ClassicalRungeKuttaIntegrator(
-      0.01);
 
   // other constants
   private static final int MUTANTS_NUMBER = 100;
@@ -203,6 +201,7 @@ public class Step02ShinglesPrinter {
     ArrayList<double[]> theCurve = new ArrayList<double[]>();
     RosslerEquations equations = new RosslerEquations(BASE_A, BASE_B, BASE_C);
     RosslerStepHandler stepHandler = new RosslerStepHandler("e01_original_curve.txt", theCurve);
+    ClassicalRungeKuttaIntegrator INTEGRATOR = new ClassicalRungeKuttaIntegrator(0.01);
     INTEGRATOR.addStepHandler(new StepNormalizer(0.1, stepHandler));
     INTEGRATOR.integrate(equations, 0, new double[] { 1., 1., 1. }, theString.length() * 0.1,
         new double[3]);
@@ -247,6 +246,9 @@ public class Step02ShinglesPrinter {
 
     }
 
+    equations = null;
+    stepHandler = null;
+    INTEGRATOR = null;
     tree = null;
     theCurve = null;
     System.gc();

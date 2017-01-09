@@ -30,3 +30,9 @@ Apparently the accuracy is 100% for classifying the mutated series set
     
 ###3.0 Second sanity check before diving to DL
 Second sanity check would be to look on the shingles for CBF classes -- both the original data and the mutants...
+
+#![CBF TRAIN dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TRAIN.png)
+
+#![CBF TEST dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TEST.png)
+
+#![Nutants dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/Mutant_shingling.png)

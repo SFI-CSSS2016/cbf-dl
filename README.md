@@ -31,8 +31,23 @@ Apparently the accuracy is 100% for classifying the mutated series set
 ###3.0 Second sanity check before diving to DL
 Second sanity check would be to look on the shingles for CBF classes -- both the original data and the mutants...
 
+Here is the shingling of `CBF TRAIN` data done with the next parameters:
+
+    private final static int WINDOW_SIZE = 60;
+    private final static int PAA_SIZE = 6;
+    private final static int ALPHABET_SIZE = 6;
+    private final static double NORM_THRESHOLD = 0.01;
+    private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
+    private final static String[] alphabet = { "a", "b", "c", "d", "e", "f" };
+    private final static int SHINGLE_SIZE = 3;
+  
 #![CBF TRAIN dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TRAIN.png)
 
+and the shingling of `CBF TEST` data done with the same parameters
 #![CBF TEST dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TEST.png)
 
-#![Nutants dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/Mutant_shingling.png)
+here is shingling of `CBF_TRAIN` symbolic sequences mutated via Rössler chaotic attractor -- a 100 of mutants per input sequence
+#![mutants dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/Mutant_shingling.png)
+
+finally, here is a visual comparison of two TEST datasets -- the original `CBF_TEST` and the one obtained via chaotic attractor
+#![CBF and mutants datasets shingling comparison](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/cbf-mutants-comparison.jpg)

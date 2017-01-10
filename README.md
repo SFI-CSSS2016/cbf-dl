@@ -13,7 +13,7 @@ Next,
 -  a new Rössler curve was generated with slightly different parameters (`RosslerEquations(0.440, 2.01, 3.74)` starting at `{ 0.99, 1., 1. }`) -- plotted with `brown` color
 - whose points were mapped into the letters (we use Voronoi tesselation to create polygons and RTree to perform mapping efficiently), resulting in a new (_potential_) representative of the same Cylinder class time series in the discretized space ...
 
-###2.0 First sanity check before diving to DL
+###2.0 First sanity check before diving into DL
 For the sanity check we use [SAX-VSM classifier](https://github.com/jMotif/sax-vsm_classic) built for CBF dataset. Once built, the classifier will be used for all the new data points generated with the above procedure based on Rössler attractor. Expected is the high accuracy... but might be not... Let's see... "_The data point_" here is the character sequence converted into a word bag.
 
 Apparently the accuracy is 100% for classifying the mutated series set
@@ -28,7 +28,7 @@ Apparently the accuracy is 100% for classifying the mutated series set
     STANADARD CBF classification results: accuracy 0.9966666666666667, error 0.0033333333333332993
     mutants classification results: accuracy 1.0; error 0.0
     
-###3.0 Second sanity check before diving to DL
+###3.0 Second sanity check before diving into DL
 Second sanity check would be to look on the shingles for CBF classes -- both the original data and the mutants...
 
 Here is the shingling of `CBF TRAIN` data done with the next parameters:

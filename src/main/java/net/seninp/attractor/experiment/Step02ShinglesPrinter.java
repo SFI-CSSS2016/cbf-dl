@@ -27,8 +27,6 @@ import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.text.TextProcessor;
-import net.seninp.jmotif.text.WordBag;
 import net.seninp.util.UCRUtils;
 
 public class Step02ShinglesPrinter {
@@ -44,7 +42,6 @@ public class Step02ShinglesPrinter {
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
   private final static Alphabet ALPHABET = new NormalAlphabet();
-  private final static TextProcessor tp = new TextProcessor();
   private final static SAXProcessor sp = new SAXProcessor();
 
   private final static String[] alphabet = { "a", "b", "c", "d", "e", "f" };
@@ -52,7 +49,7 @@ public class Step02ShinglesPrinter {
 
   // the data
   private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
-  private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST";
+  // private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST";
 
   // the curve
   private static final double BASE_A = 0.20;
@@ -180,17 +177,6 @@ public class Step02ShinglesPrinter {
     }
 
     return res;
-  }
-
-  private static WordBag toWordBag(String bagLabel, String str, int paaSize) {
-    WordBag wb = new WordBag(bagLabel);
-    int ctr = 0;
-    while (ctr < str.length()) {
-      CharSequence word = str.subSequence(ctr, ctr + PAA_SIZE);
-      wb.addWord(word.toString());
-      ctr = ctr + PAA_SIZE;
-    }
-    return wb;
   }
 
   private static Hashtable<String, String> mutateStringRossler(String theString, String keyPrefix,

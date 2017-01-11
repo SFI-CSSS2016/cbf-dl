@@ -13,7 +13,7 @@ Next,
 -  a new Rössler curve was generated with slightly different parameters (`RosslerEquations(0.440, 2.01, 3.74)` starting at `{ 0.99, 1., 1. }`) -- plotted with `brown` color
 - whose points were mapped into the letters (we use Voronoi tesselation to create polygons and RTree to perform mapping efficiently), resulting in a new (_potential_) representative of the same Cylinder class time series in the discretized space ...
 
-###2.0 First sanity check before diving to DL
+###2.0 First sanity check before diving into DL
 For the sanity check we use [SAX-VSM classifier](https://github.com/jMotif/sax-vsm_classic) built for CBF dataset. Once built, the classifier will be used for all the new data points generated with the above procedure based on Rössler attractor. Expected is the high accuracy... but might be not... Let's see... "_The data point_" here is the character sequence converted into a word bag.
 
 Apparently the accuracy is 100% for classifying the mutated series set
@@ -28,11 +28,26 @@ Apparently the accuracy is 100% for classifying the mutated series set
     STANADARD CBF classification results: accuracy 0.9966666666666667, error 0.0033333333333332993
     mutants classification results: accuracy 1.0; error 0.0
     
-###3.0 Second sanity check before diving to DL
+###3.0 Second sanity check before diving into DL
 Second sanity check would be to look on the shingles for CBF classes -- both the original data and the mutants...
 
+Here is the shingling of `CBF TRAIN` data done with the next parameters:
+
+    private final static int WINDOW_SIZE = 60;
+    private final static int PAA_SIZE = 6;
+    private final static int ALPHABET_SIZE = 6;
+    private final static double NORM_THRESHOLD = 0.01;
+    private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
+    private final static String[] alphabet = { "a", "b", "c", "d", "e", "f" };
+    private final static int SHINGLE_SIZE = 3;
+  
 #![CBF TRAIN dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TRAIN.png)
 
+and the shingling of `CBF TEST` data done with the same parameters
 #![CBF TEST dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/CBF_shingling_test_TEST.png)
 
-#![Nutants dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/Mutant_shingling.png)
+here is shingling of `CBF_TRAIN` symbolic sequences mutated via Rössler chaotic attractor -- a 100 of mutants per input sequence
+#![mutants dataset shingling](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/Mutant_shingling.png)
+
+finally, here is a visual comparison of two TEST datasets -- the original `CBF_TEST` and the one obtained via chaotic attractor
+#![CBF and mutants datasets shingling comparison](https://github.com/SFI-CSSS2016/cbf-dl/raw/master/RCode/cbf-mutants-comparison.jpg)

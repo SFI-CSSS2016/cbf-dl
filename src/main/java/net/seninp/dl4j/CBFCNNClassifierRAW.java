@@ -24,42 +24,35 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CBFDLTest {
+public class CBFCNNClassifierRAW {
 
   // the data
-  private static final String TRAIN_DATA = "src/resources/data/CBF/cbf_train_original.csv";
+  // private static final String TRAIN_DATA = "src/resources/data/CBF/cbf_train_original.csv";
+  private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
 
-  private static Logger log = LoggerFactory.getLogger(CBFDLTest.class);
+  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierRAW.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
 
+    // [1.0] describe the dataset
+    //
+    int labelIndex = 128; // 128 values in each row of the CBF file: 128 input features followed by
+    // an integer label (class) index. Labels are the 129th value (index 128) in each row
+
+    int numClasses = 3; // 3 classes (types of CBF) in the modified CBF data set. Classes have
+    // integer values 0, 1 or 2
+    int batchSize = 900; // CBF train data set: 29 examples total. We are loading all of them into
+                         // one DataSet (not recommended for large data sets)
+
     RecordReader recordReader = new CBFRecordReader(0, ",");
-
-    // ClassPathResource res = new ClassPathResource(TRAIN_DATA);
-
-    // RecordReader recordReader = new CSVRecordReader(0,",");
-
-    FileSplit files = new FileSplit(new File(TRAIN_DATA));
-
+    FileSplit files = new FileSplit(new File(TEST_DATA));
     recordReader.initialize(files);
-
-    // Second: the RecordReaderDataSetIterator handles conversion to DataSet objects, ready for use
-    // in neural network
-    int labelIndex = 128; // 5 values in each row of the iris.txt CSV: 4 input features followed by
-                          // an
-    // integer label (class) index. Labels are the 5th value (index 4) in each
-    // row
-    int numClasses = 3; // 3 classes (types of iris flowers) in the iris data set. Classes have
-                        // integer values 0, 1 or 2
-    int batchSize = 29; // Iris data set: 150 examples total. We are loading all of them into one
-                        // DataSet (not recommended for large data sets)
-
     DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex,
         numClasses);
     DataSet allData = iterator.next();
     allData.shuffle();
-    SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.80); // Use 65% of data for
+    SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
                                                                       // training
 
     DataSet trainingData = testAndTrain.getTrain();
@@ -76,15 +69,15 @@ public class CBFDLTest {
 
     final int numInputs = 128;
     int outputNum = 3;
-    int iterations = 1000;
+    int iterations = 10000;
     long seed = 6;
 
     log.info("Build model....");
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
-        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.1)
+        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.05)
         .regularization(true).l2(1e-4).list()
-        .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(3).build())
-        .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build())
+        .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(64).build())
+        .layer(1, new DenseLayer.Builder().nIn(64).nOut(3).build())
         .layer(2,
             new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                 .activation("softmax").nIn(3).nOut(outputNum).build())

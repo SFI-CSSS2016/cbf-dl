@@ -24,36 +24,36 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CBFCNNClassifierRAW {
+public class CBFCNNClassifierShingled00 {
 
   // the data
-  // private static final String TRAIN_DATA = "src/resources/data/CBF/cbf_train_original.csv";
-  private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
+  private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
+  // private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
 
-  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierRAW.class);
+  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierShingled00.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
 
     // [1.0] describe the dataset
     //
-    int labelIndex = 128; // 128 values in each row of the CBF file: 128 input features followed by
+    int labelIndex = 216; // 128 values in each row of the CBF file: 128 input features followed by
     // an integer label (class) index. Labels are the 129th value (index 128) in each row
 
     int numClasses = 3; // 3 classes (types of CBF) in the modified CBF data set. Classes have
     // integer values 0, 1 or 2
-    int batchSize = 900; // CBF train data set: 29 examples total. We are loading all of them into
+
+    int batchSize = 300; // CBF train data set: 29 examples total. We are loading all of them into
                          // one DataSet (not recommended for large data sets)
 
     RecordReader recordReader = new CBFRecordReader(0, ",");
-    FileSplit files = new FileSplit(new File(TEST_DATA));
+    FileSplit files = new FileSplit(new File(TRAIN_DATA));
     recordReader.initialize(files);
     DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex,
         numClasses);
     DataSet allData = iterator.next();
     allData.shuffle();
     SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
-                                                                      // training
 
     DataSet trainingData = testAndTrain.getTrain();
     DataSet testData = testAndTrain.getTest();
@@ -67,14 +67,14 @@ public class CBFCNNClassifierRAW {
     normalizer.transform(testData); // Apply normalization to the test data. This is using
                                     // statistics calculated from the *training* set
 
-    final int numInputs = 128;
+    final int numInputs = 216;
     int outputNum = 3;
     int iterations = 10000;
     long seed = 6;
 
     log.info("Build model....");
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
-        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.05)
+        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.1)
         .regularization(true).l2(1e-4).list()
         .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(64).build())
         .layer(1, new DenseLayer.Builder().nIn(64).nOut(3).build())
@@ -92,6 +92,7 @@ public class CBFCNNClassifierRAW {
 
     // evaluate the model on the test set
     Evaluation eval = new Evaluation(3);
+    //
     INDArray output = model.output(testData.getFeatureMatrix());
     eval.eval(testData.getLabels(), output);
     log.info(eval.stats());

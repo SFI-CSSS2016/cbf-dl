@@ -59,7 +59,7 @@ public class Step02ShinglesPrinter {
   // other constants
   private static final int MUTANTS_NUMBER = 100;
 
-  private static final String TAB = "\t";
+  private static final String SEPARATOR = "\t";
   private static final String CR = "\n";
 
   // the logger
@@ -106,7 +106,7 @@ public class Step02ShinglesPrinter {
         // 0.3 obtain the list of mutants
         //
         Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(),
-            seriesKey, MUTANTS_NUMBER);
+            seriesKey + "_" + String.valueOf(seriesIdx), MUTANTS_NUMBER);
 
         CBFMutants.putAll(mutatedStrings);
 
@@ -138,17 +138,18 @@ public class Step02ShinglesPrinter {
 
     StringBuffer header = new StringBuffer();
     for (String s : shingles) {
-      header.append(s).append(TAB);
+      header.append(s).append(SEPARATOR);
     }
-    writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
+    // writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
 
     for (String k : keys) {
       int[] freqArray = allShingles.get(k);
       StringBuffer line = new StringBuffer();
       for (String s : shingles) {
-        line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(TAB);
+        line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(SEPARATOR);
       }
-      writer.print(k + TAB + line.deleteCharAt(line.length() - 1) + CR);
+      writer.print(line.deleteCharAt(line.length() - 1) + SEPARATOR
+          + (Integer.valueOf(k.substring(0, 1)) - 1) + CR);
     }
     // for (double[] step : steps) {
     // writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);

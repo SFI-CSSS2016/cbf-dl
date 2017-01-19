@@ -36,9 +36,9 @@ import us.molini.graph.GraphFactory;
 
 public class Step01Mutator {
 
-  private static final String CR = "\n";
-  private static final String COMMA = ", ";
-  private static final String TAB = "\t";
+  // private static final String CR = "\n";
+  // private static final String COMMA = ", ";
+  // private static final String TAB = "\t";
 
   // discretization parameters
   private final static int WINDOW_SIZE = 60;
@@ -52,7 +52,7 @@ public class Step01Mutator {
 
   // the data
   private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
-  private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST";
+  // private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST";
 
   // the curve
   private static final double BASE_A = 0.20;
@@ -188,7 +188,7 @@ public class Step01Mutator {
     LOGGER.info("training the classifier");
 
     Map<String, List<double[]>> trainData = UCRUtils.readUCRData(TRAIN_DATA);
-    Map<String, List<double[]>> testData = UCRUtils.readUCRData(TEST_DATA);
+    // Map<String, List<double[]>> testData = UCRUtils.readUCRData(TEST_DATA);
 
     Params params = new Params(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE, NORM_THRESHOLD, NR_STRATEGY);
 

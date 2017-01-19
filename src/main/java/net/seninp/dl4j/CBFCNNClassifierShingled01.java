@@ -16,7 +16,6 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
@@ -24,19 +23,13 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * A first try to see the cross-validation accuracy using shingles and NN.
- * 
- * @author psenin
- *
- */
-public class CBFCNNClassifierShingled00 {
+public class CBFCNNClassifierShingled01 {
 
   // the data
   private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
-  // private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
+  private static final String TEST_DATA = "shingled_CBF.txt";
 
-  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierShingled00.class);
+  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierShingled01.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
@@ -57,12 +50,16 @@ public class CBFCNNClassifierShingled00 {
     recordReader.initialize(files);
     DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex,
         numClasses);
-    DataSet allData = iterator.next();
-    allData.shuffle();
-    SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
+    DataSet trainingData = iterator.next();
+    // allData.shuffle();
+    // SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
+    // training
 
-    DataSet trainingData = testAndTrain.getTrain();
-    DataSet testData = testAndTrain.getTest();
+    // DataSet trainingData = testAndTrain.getTrain();
+    files = new FileSplit(new File(TEST_DATA));
+    recordReader.initialize(files);
+    iterator = new RecordReaderDataSetIterator(recordReader, 900, labelIndex, numClasses);
+    DataSet testData = iterator.next();
 
     // We need to normalize our data. We'll use NormalizeStandardize (which gives us mean 0, unit
     // variance):
@@ -75,12 +72,12 @@ public class CBFCNNClassifierShingled00 {
 
     final int numInputs = 216;
     int outputNum = 3;
-    int iterations = 1000;
+    int iterations = 10000;
     long seed = 6;
 
     log.info("Build model....");
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
-        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.1)
+        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.05)
         .regularization(true).l2(1e-4).list()
         .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(108).build())
         .layer(1, new DenseLayer.Builder().nIn(108).nOut(3).build())

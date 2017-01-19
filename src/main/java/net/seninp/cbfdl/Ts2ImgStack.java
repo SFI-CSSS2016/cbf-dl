@@ -29,7 +29,7 @@ public class Ts2ImgStack {
 
   private static final SAXProcessor sp = new SAXProcessor();
 
-  private static final String TAB = "\t";
+  private static final String SEPARATOR = ",";
   private static final String CR = "\n";
 
   public static void main(String[] args) throws NumberFormatException, IOException, SAXException {
@@ -67,17 +67,19 @@ public class Ts2ImgStack {
 
     StringBuffer header = new StringBuffer();
     for (String s : shingles) {
-      header.append(s).append(TAB);
+      header.append(s).append(SEPARATOR);
     }
-    writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
+    // writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
 
     for (String k : keys) {
       int[] freqArray = allShingles.get(k);
       StringBuffer line = new StringBuffer();
       for (String s : shingles) {
-        line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(TAB);
+        line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(SEPARATOR);
       }
-      writer.print(k + TAB + line.deleteCharAt(line.length() - 1) + CR);
+      // writer.print(k + SEPARATOR + line.deleteCharAt(line.length() - 1) + CR);
+      writer.print(line.deleteCharAt(line.length() - 1) + SEPARATOR
+          + (Integer.valueOf(k.substring(0, 1)) - 1) + CR);
     }
     // for (double[] step : steps) {
     // writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);

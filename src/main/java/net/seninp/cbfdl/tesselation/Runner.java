@@ -1,4 +1,4 @@
-package tesselation;
+package net.seninp.cbfdl.tesselation;
 
 import java.io.BufferedReader;
 import java.io.File;

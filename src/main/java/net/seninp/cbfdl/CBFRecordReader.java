@@ -1,4 +1,4 @@
-package net.seninp.dl4j;
+package net.seninp.cbfdl;
 
 import java.io.DataInputStream;
 import java.io.IOException;

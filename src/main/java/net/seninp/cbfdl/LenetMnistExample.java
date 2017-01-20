@@ -1,4 +1,4 @@
-package net.seninp.dl4j;
+package net.seninp.cbfdl;
 
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;

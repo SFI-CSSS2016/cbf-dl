@@ -38,14 +38,14 @@ public class Step02ShinglesPrinter {
   // discretization parameters
   private final static int WINDOW_SIZE = 60;
   private final static int PAA_SIZE = 6;
-  private final static int ALPHABET_SIZE = 6;
+  private final static int ALPHABET_SIZE = 5;
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
   private final static Alphabet ALPHABET = new NormalAlphabet();
   private final static SAXProcessor sp = new SAXProcessor();
 
-  private final static String[] alphabet = { "a", "b", "c", "d", "e", "f" };
-  private final static int SHINGLE_SIZE = 3;
+  private final static String[] alphabet = { "a", "b", "c", "d", "e" };
+  private final static int SHINGLE_SIZE = 4;
 
   // the data
   private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
@@ -102,6 +102,7 @@ public class Step02ShinglesPrinter {
             theString.append(s);
           }
         }
+        System.out.println(theString.toString());
 
         // 0.3 obtain the list of mutants
         //
@@ -124,6 +125,7 @@ public class Step02ShinglesPrinter {
 
       Map<String, Integer> shingles = stringToShingles(e.getValue(), PAA_SIZE);
       allShingles.addShingledSeries(e.getKey(), shingles);
+      
     }
 
     ArrayList<String> keys = new ArrayList<String>();
@@ -208,9 +210,9 @@ public class Step02ShinglesPrinter {
 
       // 0.6 mutate the curve a bit
       //
-      double a = BASE_A + (0.05 - Math.random() / 10.0);
-      double b = BASE_B + (0.05 - Math.random() / 10.0);
-      double c = BASE_C + (0.05 - Math.random() / 10.0);
+      double a = BASE_A + (0.05 - Math.random() / 7.0);
+      double b = BASE_B + (0.05 - Math.random() / 7.0);
+      double c = BASE_C + (0.05 - Math.random() / 7.0);
 
       ArrayList<double[]> theMutatedCurve = new ArrayList<double[]>();
       equations = new RosslerEquations(a, b, c);

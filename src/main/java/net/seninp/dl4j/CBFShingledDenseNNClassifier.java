@@ -23,20 +23,20 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CBFCNNClassifierShingled01 {
+public class CBFShingledDenseNNClassifier {
 
   // the data
   private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
   private static final String TEST_DATA = "shingled_CBF.txt";
 
-  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierShingled01.class);
+  private static Logger log = LoggerFactory.getLogger(CBFShingledDenseNNClassifier.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
 
     // [1.0] describe the dataset
     //
-    int labelIndex = 216; // 128 values in each row of the CBF file: 128 input features followed by
+    int labelIndex = 625; // 128 values in each row of the CBF file: 128 input features followed by
     // an integer label (class) index. Labels are the 129th value (index 128) in each row
 
     int numClasses = 3; // 3 classes (types of CBF) in the modified CBF data set. Classes have
@@ -70,7 +70,7 @@ public class CBFCNNClassifierShingled01 {
     normalizer.transform(testData); // Apply normalization to the test data. This is using
                                     // statistics calculated from the *training* set
 
-    final int numInputs = 216;
+    final int numInputs = 625;
     int outputNum = 3;
     int iterations = 10000;
     long seed = 6;
@@ -79,8 +79,8 @@ public class CBFCNNClassifierShingled01 {
     MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
         .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.05)
         .regularization(true).l2(1e-4).list()
-        .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(108).build())
-        .layer(1, new DenseLayer.Builder().nIn(108).nOut(3).build())
+        .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(300).build())
+        .layer(1, new DenseLayer.Builder().nIn(300).nOut(3).build())
         .layer(2,
             new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                 .activation("softmax").nIn(3).nOut(outputNum).build())

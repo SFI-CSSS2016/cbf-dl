@@ -21,11 +21,11 @@ public class Ts2ImgStack {
   // discretization parameters
   private final static int WINDOW_SIZE = 60;
   private final static int PAA_SIZE = 6;
-  private final static int ALPHABET_SIZE = 6;
+  private final static int ALPHABET_SIZE = 5;
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
 
-  private final static int SHINGLE_SIZE = 3;
+  private final static int SHINGLE_SIZE = 4;
 
   private static final SAXProcessor sp = new SAXProcessor();
 

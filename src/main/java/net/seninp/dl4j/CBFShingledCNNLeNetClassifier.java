@@ -7,10 +7,15 @@ import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
@@ -30,20 +35,20 @@ import org.slf4j.LoggerFactory;
  * @author psenin
  *
  */
-public class CBFCNNClassifierShingled00 {
+public class CBFShingledCNNLeNetClassifier {
 
   // the data
   private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
   // private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
 
-  private static Logger log = LoggerFactory.getLogger(CBFCNNClassifierShingled00.class);
+  private static Logger log = LoggerFactory.getLogger(CBFShingledCNNLeNetClassifier.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
 
     // [1.0] describe the dataset
     //
-    int labelIndex = 216; // 128 values in each row of the CBF file: 128 input features followed by
+    int labelIndex = 625; // 128 values in each row of the CBF file: 128 input features followed by
     // an integer label (class) index. Labels are the 129th value (index 128) in each row
 
     int numClasses = 3; // 3 classes (types of CBF) in the modified CBF data set. Classes have
@@ -73,26 +78,50 @@ public class CBFCNNClassifierShingled00 {
     normalizer.transform(testData); // Apply normalization to the test data. This is using
                                     // statistics calculated from the *training* set
 
-    final int numInputs = 216;
-    int outputNum = 3;
-    int iterations = 1000;
-    long seed = 6;
+    int nChannels = 1; // Number of input channels
+    int outputNum = 3; // The number of possible outcomes
+    int iterations = 100; // Number of training iterations
+    int seed = 123; //
 
     log.info("Build model....");
-    MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder().seed(seed)
-        .iterations(iterations).activation("relu").weightInit(WeightInit.XAVIER).learningRate(0.1)
-        .regularization(true).l2(1e-4).list()
-        .layer(0, new DenseLayer.Builder().nIn(numInputs).nOut(108).build())
-        .layer(1, new DenseLayer.Builder().nIn(108).nOut(3).build())
+    MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder().seed(seed)
+        .iterations(iterations) // Training iterations as above
+        .regularization(true).l2(0.0005)
+        /*
+         * Uncomment the following for learning decay and bias
+         */
+        .learningRate(.01).biasLearningRate(0.02)
+        // .learningRateDecayPolicy(LearningRatePolicy.Inverse).lrPolicyDecayRate(0.001).lrPolicyPower(0.75)
+        .weightInit(WeightInit.XAVIER)
+        .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+        .updater(Updater.NESTEROVS).momentum(0.9).list()
+        .layer(0,
+            new ConvolutionLayer.Builder(5, 5)
+                // nIn and nOut specify depth. nIn here is the nChannels and nOut is the number of
+                // filters to be applied
+                .nIn(nChannels).stride(1, 1).nOut(20).activation("identity").build())
+        .layer(1,
+            new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX).kernelSize(2, 2)
+                .stride(2, 2).build())
         .layer(2,
+            new ConvolutionLayer.Builder(5, 5)
+                // Note that nIn need not be specified in later layers
+                .stride(1, 1).nOut(50).activation("identity").build())
+        .layer(3,
+            new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX).kernelSize(2, 2)
+                .stride(2, 2).build())
+        .layer(4, new DenseLayer.Builder().activation("relu").nOut(500).build())
+        .layer(5,
             new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                .activation("softmax").nIn(3).nOut(outputNum).build())
-        .backprop(true).pretrain(false).build();
+                .nOut(outputNum).activation("softmax").build())
+        .setInputType(InputType.convolutionalFlat(25, 25, 1)) // See note below
+        .backprop(true).pretrain(false);
 
     // run the model
+    MultiLayerConfiguration conf = builder.build();
     MultiLayerNetwork model = new MultiLayerNetwork(conf);
     model.init();
-    model.setListeners(new ScoreIterationListener(100));
+    model.setListeners(new ScoreIterationListener(10));
 
     model.fit(trainingData);
 

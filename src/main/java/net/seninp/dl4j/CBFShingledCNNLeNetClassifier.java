@@ -80,7 +80,7 @@ public class CBFShingledCNNLeNetClassifier {
 
     int nChannels = 1; // Number of input channels
     int outputNum = 3; // The number of possible outcomes
-    int iterations = 100; // Number of training iterations
+    int iterations = 1000; // Number of training iterations
     int seed = 123; //
 
     log.info("Build model....");

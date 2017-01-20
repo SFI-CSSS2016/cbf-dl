@@ -1,0 +1,128 @@
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/Users/psenin/.m2/repository/org/slf4j/slf4j-simple/1.7.12/slf4j-simple-1.7.12.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/Users/psenin/.m2/repository/ch/qos/logback/logback-classic/1.1.3/logback-classic-1.1.3.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.SimpleLoggerFactory]
+[main] INFO NativeOps - Number of threads used for NativeOps: 4
+Unable to guess runtime. Please set OMP_NUM_THREADS or equivalent manually.
+[main] INFO Nd4jBlas - Number of threads used for BLAS: 4
+[main] INFO Reflections - Reflections took 101 ms to scan 12 urls, producing 29 keys and 172 values 
+[main] INFO Reflections - Reflections took 119 ms to scan 12 urls, producing 366 keys and 1411 values 
+[main] INFO CBFCNNClassifierShingled01 - Build model....
+[main] INFO Reflections - Reflections took 1785 ms to scan 150 urls, producing 2178 keys and 14015 values 
+[main] WARN MultiLayerConfiguration - Warning: new network default sets pretrain to false.
+[main] WARN MultiLayerConfiguration - Warning: new network default sets backprop to true.
+[main] INFO ScoreIterationListener - Score at iteration 0 is 1.1439269525511453
+[main] INFO ScoreIterationListener - Score at iteration 100 is 0.02789951095291097
+[main] INFO ScoreIterationListener - Score at iteration 200 is 0.008520866262483938
+[main] INFO ScoreIterationListener - Score at iteration 300 is 0.0045800276588235395
+[main] INFO ScoreIterationListener - Score at iteration 400 is 0.003018564244299189
+[main] INFO ScoreIterationListener - Score at iteration 500 is 0.002209452797795683
+[main] INFO ScoreIterationListener - Score at iteration 600 is 0.001722495196492976
+[main] INFO ScoreIterationListener - Score at iteration 700 is 0.0014004749821868842
+[main] INFO ScoreIterationListener - Score at iteration 800 is 0.0011735611408037426
+[main] INFO ScoreIterationListener - Score at iteration 900 is 0.001005972040452345
+[main] INFO ScoreIterationListener - Score at iteration 1000 is 8.77612544443921E-4
+[main] INFO ScoreIterationListener - Score at iteration 1100 is 7.764165325076304E-4
+[main] INFO ScoreIterationListener - Score at iteration 1200 is 6.948234923219242E-4
+[main] INFO ScoreIterationListener - Score at iteration 1300 is 6.277841201400094E-4
+[main] INFO ScoreIterationListener - Score at iteration 1400 is 5.718183611388457E-4
+[main] INFO ScoreIterationListener - Score at iteration 1500 is 5.246013808011393E-4
+[main] INFO ScoreIterationListener - Score at iteration 1600 is 4.841745459101699E-4
+[main] INFO ScoreIterationListener - Score at iteration 1700 is 4.4920128664613547E-4
+[main] INFO ScoreIterationListener - Score at iteration 1800 is 4.1867787360660134E-4
+[main] INFO ScoreIterationListener - Score at iteration 1900 is 3.9182732748066653E-4
+[main] INFO ScoreIterationListener - Score at iteration 2000 is 3.68039244165934E-4
+[main] INFO ScoreIterationListener - Score at iteration 2100 is 3.4683383199101683E-4
+[main] INFO ScoreIterationListener - Score at iteration 2200 is 3.2782086979184563E-4
+[main] INFO ScoreIterationListener - Score at iteration 2300 is 3.1068886566549967E-4
+[main] INFO ScoreIterationListener - Score at iteration 2400 is 2.9517612671173325E-4
+[main] INFO ScoreIterationListener - Score at iteration 2500 is 2.810634183218088E-4
+[main] INFO ScoreIterationListener - Score at iteration 2600 is 2.6816988475340684E-4
+[main] INFO ScoreIterationListener - Score at iteration 2700 is 2.563563963195297E-4
+[main] INFO ScoreIterationListener - Score at iteration 2800 is 2.4549660736679693E-4
+[main] INFO ScoreIterationListener - Score at iteration 2900 is 2.3548038505397855E-4
+[main] INFO ScoreIterationListener - Score at iteration 3000 is 2.2621162647337275E-4
+[main] INFO ScoreIterationListener - Score at iteration 3100 is 2.1761738099130898E-4
+[main] INFO ScoreIterationListener - Score at iteration 3200 is 2.0962826739885822E-4
+[main] INFO ScoreIterationListener - Score at iteration 3300 is 2.0218489578560658E-4
+[main] INFO ScoreIterationListener - Score at iteration 3400 is 1.9523387744722982E-4
+[main] INFO ScoreIterationListener - Score at iteration 3500 is 1.8872939152650387E-4
+[main] INFO ScoreIterationListener - Score at iteration 3600 is 1.8263327977138344E-4
+[main] INFO ScoreIterationListener - Score at iteration 3700 is 1.7690518683320558E-4
+[main] INFO ScoreIterationListener - Score at iteration 3800 is 1.7151461963737792E-4
+[main] INFO ScoreIterationListener - Score at iteration 3900 is 1.6643210968273552E-4
+[main] INFO ScoreIterationListener - Score at iteration 4000 is 1.6163577201363513E-4
+[main] INFO ScoreIterationListener - Score at iteration 4100 is 1.57099019514063E-4
+[main] INFO ScoreIterationListener - Score at iteration 4200 is 1.5280469604471664E-4
+[main] INFO ScoreIterationListener - Score at iteration 4300 is 1.4873278349019525E-4
+[main] INFO ScoreIterationListener - Score at iteration 4400 is 1.4486931759694074E-4
+[main] INFO ScoreIterationListener - Score at iteration 4500 is 1.4119449660280847E-4
+[main] INFO ScoreIterationListener - Score at iteration 4600 is 1.3769812492526112E-4
+[main] INFO ScoreIterationListener - Score at iteration 4700 is 1.3436964795440857E-4
+[main] INFO ScoreIterationListener - Score at iteration 4800 is 1.311949392168458E-4
+[main] INFO ScoreIterationListener - Score at iteration 4900 is 1.2816486405004863E-4
+[main] INFO ScoreIterationListener - Score at iteration 5000 is 1.252691609100864E-4
+[main] INFO ScoreIterationListener - Score at iteration 5100 is 1.225007366580686E-4
+[main] INFO ScoreIterationListener - Score at iteration 5200 is 1.1985039573725109E-4
+[main] INFO ScoreIterationListener - Score at iteration 5300 is 1.1731058219258043E-4
+[main] INFO ScoreIterationListener - Score at iteration 5400 is 1.1487499958133955E-4
+[main] INFO ScoreIterationListener - Score at iteration 5500 is 1.1253922766263316E-4
+[main] INFO ScoreIterationListener - Score at iteration 5600 is 1.1029551949148524E-4
+[main] INFO ScoreIterationListener - Score at iteration 5700 is 1.0813958935410225E-4
+[main] INFO ScoreIterationListener - Score at iteration 5800 is 1.0606484327244725E-4
+[main] INFO ScoreIterationListener - Score at iteration 5900 is 1.0406808707678332E-4
+[main] INFO ScoreIterationListener - Score at iteration 6000 is 1.0214597347674074E-4
+[main] INFO ScoreIterationListener - Score at iteration 6100 is 1.0029459812536429E-4
+[main] INFO ScoreIterationListener - Score at iteration 6200 is 9.850803873713271E-5
+[main] INFO ScoreIterationListener - Score at iteration 6300 is 9.678443782988076E-5
+[main] INFO ScoreIterationListener - Score at iteration 6400 is 9.512101999536982E-5
+[main] INFO ScoreIterationListener - Score at iteration 6500 is 9.351534375923028E-5
+[main] INFO ScoreIterationListener - Score at iteration 6600 is 9.196317572233196E-5
+[main] INFO ScoreIterationListener - Score at iteration 6700 is 9.045983633927707E-5
+[main] INFO ScoreIterationListener - Score at iteration 6800 is 8.900738816816938E-5
+[main] INFO ScoreIterationListener - Score at iteration 6900 is 8.760276534600213E-5
+[main] INFO ScoreIterationListener - Score at iteration 7000 is 8.624278413569354E-5
+[main] INFO ScoreIterationListener - Score at iteration 7100 is 8.492219522092291E-5
+[main] INFO ScoreIterationListener - Score at iteration 7200 is 8.364173461183226E-5
+[main] INFO ScoreIterationListener - Score at iteration 7300 is 8.240263386986772E-5
+[main] INFO ScoreIterationListener - Score at iteration 7400 is 8.119982694629905E-5
+[main] INFO ScoreIterationListener - Score at iteration 7500 is 8.003220327621516E-5
+[main] INFO ScoreIterationListener - Score at iteration 7600 is 7.889823700367346E-5
+[main] INFO ScoreIterationListener - Score at iteration 7700 is 7.779595388290055E-5
+[main] INFO ScoreIterationListener - Score at iteration 7800 is 7.672750484690534E-5
+[main] INFO ScoreIterationListener - Score at iteration 7900 is 7.568737253306898E-5
+[main] INFO ScoreIterationListener - Score at iteration 8000 is 7.467660014443491E-5
+[main] INFO ScoreIterationListener - Score at iteration 8100 is 7.369014267803462E-5
+[main] INFO ScoreIterationListener - Score at iteration 8200 is 7.273273396946926E-5
+[main] INFO ScoreIterationListener - Score at iteration 8300 is 7.179865416921307E-5
+[main] INFO ScoreIterationListener - Score at iteration 8400 is 7.088969388767993E-5
+[main] INFO ScoreIterationListener - Score at iteration 8500 is 7.000500411168527E-5
+[main] INFO ScoreIterationListener - Score at iteration 8600 is 6.914211103221657E-5
+[main] INFO ScoreIterationListener - Score at iteration 8700 is 6.830316590505766E-5
+[main] INFO ScoreIterationListener - Score at iteration 8800 is 6.748418470836389E-5
+[main] INFO ScoreIterationListener - Score at iteration 8900 is 6.668400794062677E-5
+[main] INFO ScoreIterationListener - Score at iteration 9000 is 6.590670694579164E-5
+[main] INFO ScoreIterationListener - Score at iteration 9100 is 6.514537865094358E-5
+[main] INFO ScoreIterationListener - Score at iteration 9200 is 6.440375339570467E-5
+[main] INFO ScoreIterationListener - Score at iteration 9300 is 6.367687621303165E-5
+[main] INFO ScoreIterationListener - Score at iteration 9400 is 6.29687494721565E-5
+[main] INFO ScoreIterationListener - Score at iteration 9500 is 6.227741474796915E-5
+[main] INFO ScoreIterationListener - Score at iteration 9600 is 6.160217748074611E-5
+[main] INFO ScoreIterationListener - Score at iteration 9700 is 6.094104285806803E-5
+[main] INFO ScoreIterationListener - Score at iteration 9800 is 6.0295841556717255E-5
+[main] INFO ScoreIterationListener - Score at iteration 9900 is 5.96645140913082E-5
+[main] INFO CBFCNNClassifierShingled01 - 
+Examples labeled as 0 classified by model as 0: 292 times
+Examples labeled as 0 classified by model as 2: 8 times
+Examples labeled as 1 classified by model as 1: 298 times
+Examples labeled as 2 classified by model as 0: 1 times
+Examples labeled as 2 classified by model as 2: 301 times
+
+
+==========================Scores========================================
+ Accuracy:        0.99
+ Precision:       0.9902
+ Recall:          0.99
+ F1 Score:        0.9901
+========================================================================

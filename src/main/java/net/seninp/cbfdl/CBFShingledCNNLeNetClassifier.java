@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.split.FileSplit;
+import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -19,6 +20,9 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -45,6 +49,19 @@ public class CBFShingledCNNLeNetClassifier {
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
+
+    // Initialize the user interface backend
+    UIServer uiServer = UIServer.getInstance();
+
+    // Configure where the network information (gradients, score vs. time etc) is to be stored.
+    // Here: store in memory.
+    StatsStorage statsStorage = new InMemoryStatsStorage(); // Alternative: new
+                                                            // FileStatsStorage(File), for saving
+                                                            // and loading later
+
+    // Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to
+    // be visualized
+    uiServer.attach(statsStorage);
 
     // [1.0] describe the dataset
     //
@@ -122,6 +139,8 @@ public class CBFShingledCNNLeNetClassifier {
     MultiLayerNetwork model = new MultiLayerNetwork(conf);
     model.init();
     model.setListeners(new ScoreIterationListener(10));
+    // Then add the StatsListener to collect this information from the network, as it trains
+    model.setListeners(new StatsListener(statsStorage));
 
     model.fit(trainingData);
 

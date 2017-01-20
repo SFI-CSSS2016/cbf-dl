@@ -57,7 +57,7 @@ public class Step02ShinglesPrinter {
   private static final double BASE_C = 5.0;
 
   // other constants
-  private static final int MUTANTS_NUMBER = 300;
+  private static final int MUTANTS_NUMBER = 1000;
 
   private static final String SEPARATOR = ",";
   private static final String CR = "\n";

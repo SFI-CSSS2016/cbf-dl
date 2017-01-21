@@ -15,3 +15,6 @@ for (i in 1:length(linn)) {
 close(conn)
 #
 write.table(ds[-1,], "../src/resources/data/CBF/cbf_test_original.csv", col.names = F, row.names = F, sep = ",")
+str(ds)
+dd <- read.csv("../shingled_mutant_CBF.txt",header=F)
+dd[1,]

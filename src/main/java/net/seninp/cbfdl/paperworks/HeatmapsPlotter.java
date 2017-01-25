@@ -1,4 +1,4 @@
-package net.seninp.cbfdl;
+package net.seninp.cbfdl.paperworks;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import net.seninp.jmotif.sax.bitmap.Shingles;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 import net.seninp.util.UCRUtils;
 
-public class Step02ShinglesPrinter {
+public class HeatmapsPlotter {
 
   // private static final String CR = "\n";
   // private static final String COMMA = ", ";
@@ -39,15 +39,14 @@ public class Step02ShinglesPrinter {
   // discretization parameters
   private final static int WINDOW_SIZE = 60;
   private final static int PAA_SIZE = 6;
-
   private final static int ALPHABET_SIZE = 5;
-  private final static String[] alphabet = String
-      .copyValueOf(Arrays.copyOfRange(NormalAlphabet.ALPHABET, 0, ALPHABET_SIZE)).split("");
-
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
   private final static Alphabet ALPHABET = new NormalAlphabet();
   private final static SAXProcessor sp = new SAXProcessor();
+
+  private final static String[] alphabet = String
+      .copyValueOf(Arrays.copyOfRange(NormalAlphabet.ALPHABET, 0, ALPHABET_SIZE)).split("");
 
   private final static int SHINGLE_SIZE = 4;
 

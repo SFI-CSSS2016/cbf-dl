@@ -1,4 +1,4 @@
-package net.seninp.cbfdl.tesselation;
+package net.seninp.cbfdl.paperworks;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,7 +11,7 @@ import be.humphreys.simplevoronoi.GraphEdge;
 import be.humphreys.simplevoronoi.Point;
 import us.molini.graph.GraphFactory;
 
-public class Runner {
+public class TesselationPlotter {
 
   public static void main(String[] args) throws NumberFormatException, IOException {
 

@@ -49,7 +49,7 @@ public class Step02TESTShinglesPrinter {
   private final static int SHINGLE_SIZE = 4;
 
   // the CBF train data
-  private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TEST";
+  private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
 
   // constants
   private static final String SEPARATOR = ",";
@@ -118,7 +118,7 @@ public class Step02TESTShinglesPrinter {
     keys.addAll(allShingles.getShingles().keySet());
     Collections.sort(keys);
 
-    PrintWriter writer = new PrintWriter(new File("src/resources/data/CBF/CBF_TEST_shingled.txt"),
+    PrintWriter writer = new PrintWriter(new File("src/resources/data/CBF/CBF_TRAIN_shingled.txt"),
         "UTF-8");
 
     ArrayList<String> shingles = new ArrayList<String>();

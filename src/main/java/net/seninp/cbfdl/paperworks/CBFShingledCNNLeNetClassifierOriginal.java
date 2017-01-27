@@ -1,4 +1,4 @@
-package net.seninp.cbfdl;
+package net.seninp.cbfdl.paperworks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +28,7 @@ import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import net.seninp.cbfdl.CBFRecordReader;
 
 /**
  * A first try to see the cross-validation accuracy using shingles and NN.
@@ -35,29 +36,16 @@ import org.slf4j.LoggerFactory;
  * @author psenin
  *
  */
-public class CBFShingledCNNLeNetClassifier {
+public class CBFShingledCNNLeNetClassifierOriginal {
 
   // the data
-  private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
+  private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN_shingled.txt";
   private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST_shingled.txt";
 
-  private static Logger log = LoggerFactory.getLogger(CBFShingledCNNLeNetClassifier.class);
+  private static Logger log = LoggerFactory.getLogger(CBFShingledCNNLeNetClassifierOriginal.class);
 
   public static void main(String[] args)
       throws FileNotFoundException, IOException, InterruptedException {
-
-    // Initialize the user interface backend
-    // UIServer uiServer = UIServer.getInstance();
-
-    // Configure where the network information (gradients, score vs. time etc) is to be stored.
-    // Here: store in memory.
-    // StatsStorage statsStorage = new InMemoryStatsStorage(); // Alternative: new
-    // FileStatsStorage(File), for saving
-    // and loading later
-
-    // Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to
-    // be visualized
-    // uiServer.attach(statsStorage);
 
     // [1.0] describe the dataset
     //
@@ -66,7 +54,7 @@ public class CBFShingledCNNLeNetClassifier {
     int numClasses = 3; // 3 classes (types of CBF) in the modified CBF data set. Classes have
                         // integer values 0, 1 or 2
 
-    int batchSize = 3000; // CBF train data set: 30000 examples total.
+    int batchSize = 30; // CBF train data set: 30000 examples total.
 
     RecordReader recordReader = new CBFRecordReader(1, ",");
     FileSplit files = new FileSplit(new File(TRAIN_DATA));
@@ -75,8 +63,8 @@ public class CBFShingledCNNLeNetClassifier {
         numClasses);
     DataNormalization normalizer = new NormalizerStandardize();
     normalizer.fit(iterator);
-    MultipleEpochsIterator trainIter = new MultipleEpochsIterator(100, iterator, 4);
-    trainIter.setPreProcessor(normalizer);
+    DataSet trainData = iterator.next();
+    normalizer.transform(trainData);
     
     RecordReader recordReader2 = new CBFRecordReader(1, ",");
     FileSplit files2 = new FileSplit(new File(TEST_DATA));
@@ -89,7 +77,7 @@ public class CBFShingledCNNLeNetClassifier {
 
     int nChannels = 1; // Number of input channels
     int outputNum = 3; // The number of possible outcomes
-    int iterations = 1; // Number of training iterations
+    int iterations = 5000; // Number of training iterations
     int seed = 123; //
 
     log.info("Build model....");
@@ -130,11 +118,11 @@ public class CBFShingledCNNLeNetClassifier {
     MultiLayerConfiguration conf = builder.build();
     MultiLayerNetwork model = new MultiLayerNetwork(conf);
     model.init();
-    model.setListeners(new ScoreIterationListener(5));
+    model.setListeners(new ScoreIterationListener(1));
     // Then add the StatsListener to collect this information from the network, as it trains
     // model.setListeners(new StatsListener(statsStorage));
 
-    model.fit(trainIter);
+    model.fit(trainData);
 
     // evaluate the model on the test set
     Evaluation eval = new Evaluation(3);

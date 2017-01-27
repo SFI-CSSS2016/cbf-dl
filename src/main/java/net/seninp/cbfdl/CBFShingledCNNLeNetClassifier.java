@@ -25,7 +25,6 @@ import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
@@ -43,7 +42,7 @@ public class CBFShingledCNNLeNetClassifier {
 
   // the data
   private static final String TRAIN_DATA = "shingled_mutant_CBF.txt";
-  // private static final String TEST_DATA = "src/resources/data/CBF/cbf_test_original.csv";
+  private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST_shingled.txt";
 
   private static Logger log = LoggerFactory.getLogger(CBFShingledCNNLeNetClassifier.class);
 
@@ -74,18 +73,25 @@ public class CBFShingledCNNLeNetClassifier {
     int batchSize = 3000; // CBF train data set: 29 examples total. We are loading all of them into
                           // one DataSet (not recommended for large data sets)
 
-    RecordReader recordReader = new CBFRecordReader(0, ",");
+    RecordReader recordReader = new CBFRecordReader(1, ",");
     FileSplit files = new FileSplit(new File(TRAIN_DATA));
     recordReader.initialize(files);
     DataSetIterator iterator = new RecordReaderDataSetIterator(recordReader, batchSize, labelIndex,
         numClasses);
     DataSet allData = iterator.next();
-    allData.shuffle();
-    SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
+    // allData.shuffle();
+    // SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.65); // Use 65% of data for
+    DataSet trainingData = allData;
+//    DataSet testData = testAndTrain.getTest();
 
-    DataSet trainingData = testAndTrain.getTrain();
-    DataSet testData = testAndTrain.getTest();
-
+    
+    RecordReader recordReader2 = new CBFRecordReader(1, ",");
+    FileSplit files2 = new FileSplit(new File(TEST_DATA));
+    recordReader2.initialize(files2);
+    DataSetIterator iterator2 = new RecordReaderDataSetIterator(recordReader2, batchSize, labelIndex,
+        numClasses);
+    DataSet testData = iterator2.next();
+    
     // We need to normalize our data. We'll use NormalizeStandardize (which gives us mean 0, unit
     // variance):
     DataNormalization normalizer = new NormalizerStandardize();
@@ -97,7 +103,7 @@ public class CBFShingledCNNLeNetClassifier {
 
     int nChannels = 1; // Number of input channels
     int outputNum = 3; // The number of possible outcomes
-    int iterations = 300; // Number of training iterations
+    int iterations = 30; // Number of training iterations
     int seed = 123; //
 
     log.info("Build model....");

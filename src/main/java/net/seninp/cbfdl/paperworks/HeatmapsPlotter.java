@@ -10,16 +10,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.math3.ode.nonstiff.ClassicalRungeKuttaIntegrator;
-import org.apache.commons.math3.ode.sampling.StepNormalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.davidmoten.rtree.Entry;
-import com.github.davidmoten.rtree.RTree;
-import com.github.davidmoten.rtree.geometry.Geometries;
-import com.github.davidmoten.rtree.geometry.Geometry;
-import net.seninp.attractor.rossler.RosslerEquations;
-import net.seninp.attractor.rossler.RosslerStepHandler;
+import net.seninp.cbfdl.RosslerMutator;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
@@ -32,42 +25,45 @@ import net.seninp.util.UCRUtils;
 
 public class HeatmapsPlotter {
 
-  // private static final String CR = "\n";
-  // private static final String COMMA = ", ";
-  // private static final String TAB = "\t";
-
   // discretization parameters
   private final static int WINDOW_SIZE = 60;
   private final static int PAA_SIZE = 6;
   private final static int ALPHABET_SIZE = 5;
   private final static double NORM_THRESHOLD = 0.01;
   private static final NumerosityReductionStrategy NR_STRATEGY = NumerosityReductionStrategy.NONE;
-  private final static Alphabet ALPHABET = new NormalAlphabet();
-  private final static SAXProcessor sp = new SAXProcessor();
 
+  // processors
+  private final static SAXProcessor sp = new SAXProcessor();
+  private final static Alphabet ALPHABET = new NormalAlphabet();
   private final static String[] alphabet = String
       .copyValueOf(Arrays.copyOfRange(NormalAlphabet.ALPHABET, 0, ALPHABET_SIZE)).split("");
 
+  // shingling params
   private final static int SHINGLE_SIZE = 4;
 
-  // the data
+  // the CBF train data
   private static final String TRAIN_DATA = "src/resources/data/CBF/CBF_TRAIN";
   // private static final String TEST_DATA = "src/resources/data/CBF/CBF_TEST";
 
-  // the curve
+  // the Rossler curve initial parameters
   private static final double BASE_A = 0.20;
   private static final double BASE_B = 0.20;
   private static final double BASE_C = 5.0;
 
-  // other constants
-  private static final int MUTANTS_NUMBER = 100;
+  private final static RosslerMutator rm = new RosslerMutator(BASE_A, BASE_B, BASE_C);
 
+  // how many mutants to generate
+  private static final int MUTANTS_NUMBER = 1000;
+
+  // constants
   private static final String SEPARATOR = ",";
   private static final String CR = "\n";
 
   // the logger
   private static final Logger LOGGER = LoggerFactory.getLogger(TSProcessor.class);
 
+  // the main executable
+  //
   public static void main(String[] args) throws NumberFormatException, IOException, SAXException {
 
     // 0.0 -- read the data
@@ -79,8 +75,8 @@ public class HeatmapsPlotter {
     //
     Hashtable<String, String> CBFMutants = new Hashtable<String, String>();
 
+    // fix the class
     for (java.util.Map.Entry<String, List<double[]>> trainEntry : CBFData.entrySet()) {
-
       String seriesKey = trainEntry.getKey();
 
       // iterate over the class' series
@@ -105,14 +101,14 @@ public class HeatmapsPlotter {
             theString.append(s);
           }
         }
-        System.out.println(theString.toString());
 
         // 0.3 obtain the list of mutants
         //
-        Hashtable<String, String> mutatedStrings = mutateStringRossler(theString.toString(),
+        Hashtable<String, String> mutatedStrings = rm.mutateStringRossler(theString.toString(),
             seriesKey + "_" + String.valueOf(seriesIdx), MUTANTS_NUMBER);
 
         CBFMutants.putAll(mutatedStrings);
+        mutatedStrings.clear();
 
         seriesIdx++;
 
@@ -145,7 +141,7 @@ public class HeatmapsPlotter {
     for (String s : shingles) {
       header.append(s).append(SEPARATOR);
     }
-    // writer.print("key" + TAB + header.deleteCharAt(header.length() - 1) + CR);
+    writer.print(header.deleteCharAt(header.length() - 1) + SEPARATOR + "key" + CR);
 
     for (String k : keys) {
       int[] freqArray = allShingles.get(k);
@@ -154,13 +150,10 @@ public class HeatmapsPlotter {
         line.append(freqArray[allShingles.getShinglesIndex().get(s)]).append(SEPARATOR);
       }
       writer.print(line.deleteCharAt(line.length() - 1) + SEPARATOR
-          + (Integer.valueOf(k.substring(0, 1)) - 1) + CR);
+          + k + CR);
     }
-    // for (double[] step : steps) {
-    // writer.println(step[0] + TAB + step[1] + TAB + step[2] + TAB + step[3]);
-    // }
-    writer.close();
 
+    writer.close();
   }
 
   private static Map<String, Integer> stringToShingles(String str, int paaSize) {
@@ -181,69 +174,6 @@ public class HeatmapsPlotter {
       }
       ctr = ctr + PAA_SIZE;
     }
-
-    return res;
-  }
-
-  private static Hashtable<String, String> mutateStringRossler(String theString, String keyPrefix,
-      int mutantsNum) {
-
-    // 0.3 generate the curve
-    //
-    ArrayList<double[]> theCurve = new ArrayList<double[]>();
-    RosslerEquations equations = new RosslerEquations(BASE_A, BASE_B, BASE_C);
-    RosslerStepHandler stepHandler = new RosslerStepHandler("e01_original_curve.txt", theCurve);
-    ClassicalRungeKuttaIntegrator INTEGRATOR = new ClassicalRungeKuttaIntegrator(0.01);
-    INTEGRATOR.addStepHandler(new StepNormalizer(0.1, stepHandler));
-    INTEGRATOR.integrate(equations, 0, new double[] { 1., 1., 1. }, theString.length() * 0.1,
-        new double[3]);
-
-    // 0.5 build the tree of the original series points
-    //
-    RTree<String, Geometry> tree = RTree.create();
-    for (int i = 0; i < Math.min(theCurve.size(), theString.length()); i++) {
-      double[] pp = theCurve.get(i);
-      tree = tree.add(String.valueOf(theString.charAt(i)), Geometries.point(pp[1], pp[2]));
-    }
-    // tree.visualize(600, 600).save("target/mytree.png");
-
-    Hashtable<String, String> res = new Hashtable<String, String>();
-
-    for (int j = 0; j < mutantsNum; j++) {
-
-      // 0.6 mutate the curve a bit
-      //
-      double a = BASE_A + (0.05 - Math.random() / 7.0);
-      double b = BASE_B + (0.05 - Math.random() / 7.0);
-      double c = BASE_C + (0.05 - Math.random() / 7.0);
-
-      ArrayList<double[]> theMutatedCurve = new ArrayList<double[]>();
-      equations = new RosslerEquations(a, b, c);
-      stepHandler = new RosslerStepHandler("e01_mutated_curve.txt", theMutatedCurve);
-      INTEGRATOR.addStepHandler(new StepNormalizer(0.1, stepHandler));
-      INTEGRATOR.integrate(equations, 0, new double[] { 1., 1., 1. }, theString.length(),
-          new double[3]);
-
-      // 0.6 extract the new string
-      //
-      StringBuffer theNewString = new StringBuffer(theString.length());
-      for (int i = 0; i < Math.min(theMutatedCurve.size(), theString.length()); i++) {
-        double[] newP = theMutatedCurve.get(i);
-        com.github.davidmoten.rtree.geometry.Point point = Geometries.point(newP[1], newP[2]);
-        Entry<String, Geometry> pp = tree.nearest(point, 3, 1).toBlocking().single();
-        theNewString.append(pp.value());
-      }
-
-      res.put(keyPrefix + "_" + String.valueOf(j), theNewString.toString());
-
-    }
-
-    equations = null;
-    stepHandler = null;
-    INTEGRATOR = null;
-    tree = null;
-    theCurve = null;
-    System.gc();
 
     return res;
   }
